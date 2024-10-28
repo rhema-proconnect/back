@@ -35,7 +35,7 @@ app.use("/api/", sdt)
 app.use("/api/",sw)
 app.use("/api/",contact)
 
-app.get("/", (req, res) => {
+app.get("/api/", (req, res) => {
     res.json("Hi")
 })
 

@@ -43,7 +43,7 @@ app.use("/api/",sw)
 app.use("/api/",contact)
 
 app.get("/api/page", (req, res) => {
-    const page = await Page.find()
+    var page = await Page.find()
     res.status(200).json({success: true, data: page});
 })
 

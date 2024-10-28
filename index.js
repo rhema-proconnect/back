@@ -35,5 +35,9 @@ app.use("/api/", sdtM)
 app.use("/api/",sw)
 app.use("/api/",contact)
 
+app.get("/", (req, res) => {
+    res.json("Hi")
+})
+
 const port = process.env.PORT || 8080;
 app.listen(port, console.log(`Listening on port ${port}...`));

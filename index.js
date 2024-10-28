@@ -14,13 +14,7 @@ const sdt = require('./Students/router')
 // const sdtM = require('./StudentMonoSite/router')
 const sw = require("./Self_worker/router")
 const contact = require("./contact/route")
-const {
-    // createPage,
-    getPages,
-    // getPage,
-    // updatePage,
-    // deletePage
-  } = require('./page/pageModel');
+const Page = require('./page/pageModel');
 // database connection
 connection();
 
@@ -43,7 +37,7 @@ app.use("/api/",sw)
 app.use("/api/",contact)
 
 app.get("/api/page", (req, res) => {
-    var page = await Page.find()
+    const page = await Page.find()
     res.status(200).json({success: true, data: page});
 })
 

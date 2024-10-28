@@ -36,7 +36,7 @@ app.use("/api/", sdt)
 app.use("/api/",sw)
 app.use("/api/",contact)
 
-app.get("/api/page", (req, res) => {
+app.get("/api/page", async (req, res) => {
     const page = await Page.find()
     res.status(200).json({success: true, data: page});
 })

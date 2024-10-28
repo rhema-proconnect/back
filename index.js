@@ -5,7 +5,7 @@ const cors = require("cors");
 const connection = require("./db");
 const userRoutes = require("./user/users");
 const authRoutes = require("./user/auth");
-const page = require('./page/pageRouter')
+// const page = require('./page/pageRouter')
 const service = require('./service/serviceRouter')
 const appt = require('./appointment/appRouter')
 const cpny = require('./Company/companyRouter')
@@ -14,6 +14,13 @@ const sdt = require('./Students/router')
 // const sdtM = require('./StudentMonoSite/router')
 const sw = require("./Self_worker/router")
 const contact = require("./contact/route")
+const {
+    // createPage,
+    getPages,
+    // getPage,
+    // updatePage,
+    // deletePage
+  } = require('./page/pageModel');
 // database connection
 connection();
 
@@ -25,7 +32,7 @@ app.use('/uploads',express.static('uploads'))
 // routes
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
-app.use('/api',page)
+// app.use('/api',page)
 app.use('/api',service)
 app.use('/api',appt)
 app.use("/api/", cpny)
@@ -34,6 +41,11 @@ app.use("/api/", sdt)
 // app.use("/api/", sdtM)
 app.use("/api/",sw)
 app.use("/api/",contact)
+
+app.get("/api/page", (req, res) => {
+    const page = await Page.find()
+    res.status(200).json({success: true, data: page});
+})
 
 app.get("/", (req, res) => {
     res.json("Hi")

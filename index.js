@@ -26,7 +26,7 @@ app.use('/uploads',express.static('uploads'))
 // routes
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
-// app.use('/api',page)
+app.use('/api',page)
 app.use('/api',service)
 app.use('/api',appt)
 app.use("/api/", cpny)
@@ -36,10 +36,10 @@ app.use("/api/", sdt)
 app.use("/api/",sw)
 app.use("/api/",contact)
 
-app.get("/api/page", async (req, res) => {
-    const page = await Page.find()
-    res.status(200).json({success: true, data: page});
-})
+// app.get("/api/page", async (req, res) => {
+//     const page = await Page.find()
+//     res.status(200).json({success: true, data: page});
+// })
 
 app.get("/", (req, res) => {
     res.json("Hi")

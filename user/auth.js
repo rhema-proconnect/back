@@ -118,7 +118,7 @@ router.post('/forgot-password', async (req, res) => {
     await user.save();
 
     // Create reset URL
-    const resetUrl = `http://localhost:3000/reset-password/${resetToken}`;
+    const resetUrl = `https://f4-five.vercel.app/reset-password/${resetToken}`;
     // const resetUrl = `${req.protocol}://${req.get('host')}/reset-password/${resetToken}`;
 
     // Send email using nodemailer

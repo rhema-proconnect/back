@@ -10,8 +10,10 @@ const userSchema = new mongoose.Schema({
 	password: { type: String, required: true },
 	verified: { type: Boolean, default: false },
 	role: { type: String, default: 'Users', enum: ['Users','Support','Admin','Company',"Student","Selfworker"]},
+	verificationCode: { type: String },
+	otpExpires: { type: Date },
 	resetPasswordToken: String,
-    resetPasswordExpires: Date
+    	resetPasswordExpires: Date
 });
 
 userSchema.methods.generateAuthToken = function () {

@@ -6,6 +6,38 @@ const sendEmail = require("../utils/sendEmail");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer")
 
+// const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+// const User = require('./model');
+// const nodemailer = require('nodemailer');
+const { generateOtp } = require('../utils/otp');
+
+const sendVerificationEmail = (userEmail, code) => {
+  const transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+			port: 465,
+			secure: true,
+			auth: {
+				user: "kaliomlk81@gmail.com",
+				pass: "suckbllxsoiktyoh",
+			},
+  });
+
+  const mailOptions = {
+    from: "kaliomlk81@gmail.com",
+    to: userEmail,
+    subject: 'Email Verification',
+    text: `Your verification code is: ${code}`,
+  };
+
+  transporter.sendMail(mailOptions, (err, info) => {
+    if (err) {
+      console.log('Error sending email:', err);
+    } else {
+      console.log('Email sent:', info.response);
+    }
+  });
+};
 // const imapConfig = {
 // 	imap: {
 // 	  user: 'kaliomlk81@gmail.com',
@@ -18,36 +50,58 @@ const nodemailer = require("nodemailer")
 //   };
 
 router.post("/signup", async (req, res) => {
+	  const { email, username, password } = req.body;
+
 	try {
-		const { error } = validate(req.body);
-		if (error)
-			return res.status(400).send({ message: error.details[0].message });
+	    const hashedPassword = await bcrypt.hash(password, 10);
+	    const verificationCode = crypto.randomBytes(3).toString('hex');
+	
+	    const newUser = new User({
+	      email,
+	      username,
+	      password: hashedPassword,
+	      verificationCode,
+	    });
+	
+	    await newUser.save();
+	
+	    // Send verification email
+	    sendVerificationEmail(email, verificationCode);
+	
+	    res.status(201).json({ message: 'User registered. Check your email for verification code.' });
+	  } catch (err) {
+	    res.status(500).json({ error: 'Registration failed' });
+	  }
+	// try {
+	// 	const { error } = validate(req.body);
+	// 	if (error)
+	// 		return res.status(400).send({ message: error.details[0].message });
 
-		let user = await User.findOne({ email: req.body.email });
-		if (user)
-			return res
-				.status(409)
-				.send({ message: "User with given email already Exist!" });
+	// 	let user = await User.findOne({ email: req.body.email });
+	// 	if (user)
+	// 		return res
+	// 			.status(409)
+	// 			.send({ message: "User with given email already Exist!" });
 
-		const salt = await bcrypt.genSalt(Number(process.env.SALT));
-		const hashPassword = await bcrypt.hash(req.body.password, salt);
+	// 	const salt = await bcrypt.genSalt(Number(process.env.SALT));
+	// 	const hashPassword = await bcrypt.hash(req.body.password, salt);
 
-		user = await new User({ ...req.body, password: hashPassword }).save();
+	// 	user = await new User({ ...req.body, password: hashPassword }).save();
 
-		const token = await new Token({
-			userId: user._id,
-			token: crypto.randomBytes(32).toString("hex"),
-		}).save();
-		const url = `${process.env.BASE_URL}users/${user.id}/verify/${token.token}`;
-		await sendEmail(user.email, "Verify Email", url);
+	// 	const token = await new Token({
+	// 		userId: user._id,
+	// 		token: crypto.randomBytes(32).toString("hex"),
+	// 	}).save();
+	// 	const url = `${process.env.BASE_URL}users/${user.id}/verify/${token.token}`;
+	// 	await sendEmail(user.email, "Verify Email", url);
 
-		res
-			.status(201)
-			.send({ message: "An Email sent to your account please verify" });
-	} catch (error) {
-		console.log(error);
-		res.status(500).send({ message: "Something went wrong" });
-	}
+	// 	res
+	// 		.status(201)
+	// 		.send({ message: "An Email sent to your account please verify" });
+	// } catch (error) {
+	// 	console.log(error);
+	// 	res.status(500).send({ message: "Something went wrong" });
+	// }
 });
 
 router.post("/verify/", async (req, res) => {

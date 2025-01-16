@@ -46,19 +46,20 @@ router.post("/login", async (req, res) => {
 			return res.status(401).send({ message: "Invalid Email or Password" });
 
 		if (!user.verified) {
-			let token = await Token.findOne({ userId: user._id });
-			if (!token) {
-				token = await new Token({
-					userId: user._id,
-					token: crypto.randomBytes(32).toString("hex"),
-				}).save();
-				const url = `${process.env.BASE_URL}users/${user.id}/verify/${token.token}`;
-				await sendEmail(user.email, "Verify Email", url);
-			}
+			return res.status(401).send({ message: "Invalid Email or Password" });
+			// let token = await Token.findOne({ userId: user._id });
+			// if (!token) {
+			// 	token = await new Token({
+			// 		userId: user._id,
+			// 		token: crypto.randomBytes(32).toString("hex"),
+			// 	}).save();
+			// 	const url = `${process.env.BASE_URL}users/${user.id}/verify/${token.token}`;
+			// 	await sendEmail(user.email, "Verify Email", url);
+			// }
 
-			return res
-				.status(400)
-				.send({ message: "An Email sent to your account please verify" });
+			// return res
+			// 	.status(400)
+			// 	.send({ message: "An Email sent to your account please verify" });
 		}
 
 		const token = user.generateAuthToken();

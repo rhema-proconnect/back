@@ -104,6 +104,26 @@ router.post("/signup", async (req, res) => {
 	// }
 });
 
+
+router.post('/verify-email', async (req, res) => {
+	const { email, verificationCode } = req.body;
+	try {
+	  const user = await User.findOne({ email });
+  
+	  if (!user || user.verificationCode !== verificationCode) {
+		return res.status(400).json({ error: 'Invalid verification code' });
+	  }
+  
+	  user.isVerified = true;
+	  user.verificationCode = null;
+	  await user.save();
+  
+	  res.status(200).json({ message: 'Email verified successfully' });
+	} catch (err) {
+	  res.status(500).json({ message: 'Verification failed' });
+	}
+  });
+
 router.post("/verify/", async (req, res) => {
 	try {
 		const user = await User.findOne({ _id: req.body.id });

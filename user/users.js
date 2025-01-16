@@ -114,7 +114,7 @@ router.post('/verify-email', async (req, res) => {
 		return res.status(400).json({ error: 'Invalid verification code' });
 	  }
   
-	  user.isVerified = true;
+	  user.verified = true;
 	  user.verificationCode = null;
 	  await user.save();
   

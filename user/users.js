@@ -16,7 +16,7 @@ const sendVerificationEmail = (userEmail, code) => {
   const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
 			port: 465,
-			secure: true,
+			secure: false,
 			auth: {
 				user: "kaliomlk81@gmail.com",
 				pass: "suckbllxsoiktyoh",
